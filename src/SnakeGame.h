@@ -1,6 +1,8 @@
 #include <vector>
 #include <ncurses.h>
 
+#include "SnakeMap.h"
+
 #ifndef SNAKEGAME_H
 #define SNAKEGAME_H
 
@@ -21,13 +23,14 @@ private:
     char direction; // direction of snake head
     std::vector<Position> snake;
 
+    MapHandler m;
+
 private:
     void init();
     void drawSnake();
-    
+    void drawMap();
     void snakeMove();
     bool gameOver();
-
 public:
     SnakeGame(int level);   // constructor
     virtual ~SnakeGame();   // destructor

@@ -24,6 +24,14 @@ void SnakeGame::init()
     noecho();   // user input x
     curs_set(0);    // cursor x
     getmaxyx(stdscr, maxHeight, maxWidth);
+
+    //Set colors
+    start_color();
+    init_pair(1, COLOR_WHITE, COLOR_WHITE); //Wall, Immune Wall
+    init_pair(2, COLOR_CYAN, COLOR_CYAN); //Snake Head, Body
+    init_pair(3, COLOR_GREEN, COLOR_GREEN); //Growth
+    init_pair(4, COLOR_RED, COLOR_RED); //Poison
+    init_pair(5, COLOR_MAGENTA, COLOR_MAGENTA); //Gate
 }
 
 /* draw a snake on the map */
@@ -103,6 +111,9 @@ bool SnakeGame::gameOver()
     if (direction == 'u' && key_pressed == KEY_DOWN)    { return true; }
     if (direction == 'd' && key_pressed == KEY_UP)      { return true; }
 
+    // snake head meets Wall
+    if (m.isWall(snake[0].y, snake[0].x))               { return true; }
+
     return false;
 }
 
@@ -111,8 +122,10 @@ SnakeGame::SnakeGame(int level)
     speed = 500000; // 0.5sec
     snakeChar = '#';
     direction = 'r'; // right
-
+    
+    m.importLevel(level);
     init();
+    drawMap();
     drawSnake();
     refresh();
 }
@@ -137,5 +150,47 @@ void SnakeGame::startGame()
         }
         snakeMove();
         usleep(speed); // delay
+    }
+}
+
+//draw game map
+void SnakeGame::drawMap() {
+    char **map{m.getMap()};
+    for (int y{}; y < m.getMaxHeight(); y++) {
+        for (int x{}; x < m.getMaxWidth(); x++) {
+            move(y, x);
+            int color;
+            switch (map[y][x])
+            {
+            case '0':
+                printw(" ");
+                break;
+            case '1': //Wall
+                attron(COLOR_PAIR(1));
+                printw("_");
+                attroff(COLOR_PAIR(1));
+                break;
+            case '2': //Immune Wall
+                attron(COLOR_PAIR(1));
+                printw("_");
+                attroff(COLOR_PAIR(1));
+                break;
+            case '3': //Growth
+                attron(COLOR_PAIR(3));
+                printw("_");
+                attroff(COLOR_PAIR(3));
+                break;
+            case '4': //Poison
+                attron(COLOR_PAIR(4));
+                printw("_");
+                attroff(COLOR_PAIR(4));
+                break;
+            case '5': //Gate
+                attron(COLOR_PAIR(5));
+                printw("_");
+                attroff(COLOR_PAIR(5));
+                break;
+            }
+        }
     }
 }
