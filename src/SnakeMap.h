@@ -1,5 +1,5 @@
 #ifndef _SNAKE_MAP_
-#define _SNAKE_MAP
+#define _SNAKE_MAP_
 
 #include <fstream>
 #include <ncurses.h>
