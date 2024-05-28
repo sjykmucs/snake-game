@@ -31,7 +31,7 @@ void SnakeGame::init()
     init_pair(2, COLOR_CYAN, COLOR_CYAN); //Snake Head, Body
     init_pair(3, COLOR_GREEN, COLOR_GREEN); //Growth
     init_pair(4, COLOR_RED, COLOR_RED); //Poison
-    init_pair(5, COLOR_MAGENTA, COLOR_MAGENTA); //Gate
+    init_pair(5, COLOR_BLUE, COLOR_MAGENTA); //Gate
 }
 
 /* draw a snake on the map */
@@ -122,7 +122,9 @@ SnakeGame::SnakeGame(int level)
     speed = 500000; // 0.5sec
     snakeChar = '#';
     direction = 'r'; // right
-    
+    item_timer = 0;
+    gateOpen = false;
+
     m.importLevel(level);
     init();
     drawMap();
@@ -149,6 +151,9 @@ void SnakeGame::startGame()
             break;
         }
         snakeMove();
+        checkItem();
+        updateItem();
+        drawMap();
         usleep(speed); // delay
     }
 }
@@ -163,34 +168,95 @@ void SnakeGame::drawMap() {
             switch (map[y][x])
             {
             case '0':
-                printw(" ");
                 break;
             case '1': //Wall
-                attron(COLOR_PAIR(1));
-                printw("_");
-                attroff(COLOR_PAIR(1));
+                attron(COLOR_PAIR(1)); attron(A_INVIS);
+                addch('_');
+                attroff(COLOR_PAIR(1)); attroff(A_INVIS);
                 break;
             case '2': //Immune Wall
-                attron(COLOR_PAIR(1));
-                printw("_");
-                attroff(COLOR_PAIR(1));
+                attron(COLOR_PAIR(1)); attron(A_INVIS);
+                addch('_');
+                attroff(COLOR_PAIR(1)); attroff(A_INVIS);
                 break;
             case '3': //Growth
                 attron(COLOR_PAIR(3));
-                printw("_");
+                addch('_');
                 attroff(COLOR_PAIR(3));
                 break;
             case '4': //Poison
                 attron(COLOR_PAIR(4));
-                printw("_");
+                addch('_');
                 attroff(COLOR_PAIR(4));
                 break;
             case '5': //Gate
-                attron(COLOR_PAIR(5));
-                printw("_");
+                attron(COLOR_PAIR(5)); 
+                addch('0');
                 attroff(COLOR_PAIR(5));
                 break;
             }
         }
     }
+}
+void SnakeGame::checkItem() {
+    // check snake tail
+    char item = m.getItem(snake.back().y, snake.back().x);
+    if (item == '5') gateOpen = false;
+
+    // check snake head
+    item = m.getItem(snake[0].y, snake[0].x);
+    switch (item)
+    {
+    case '3': //Growth
+        break;
+    case '4': //Poison
+        break;
+    case '5': //Gate
+        Gate in = m.getGate(snake[0].y, snake[0].x);
+        snake[0].y = in.out->y;
+        snake[0].x = in.out->x;
+        gateOpen = true;
+
+        char UP = m.getItem(snake[0].y + 1, snake[0].x);
+        char RI = m.getItem(snake[0].y, snake[0].x + 1);
+        char DO = m.getItem(snake[0].y - 1, snake[0].x);
+        char LE = m.getItem(snake[0].y, snake[0].x - 1);
+
+
+        switch (direction)
+        {
+        case 'u':
+            if (UP != '1' && UP != '5') direction = 'u';
+            else if (RI != '1' && RI != '5') direction = 'r';
+            else if (LE != '1' && LE != '5') direction = 'l';
+            else if (DO != '1' && DO != '5') direction = 'd';
+            break;
+        case 'r':
+            if (RI != '1' && RI != '5') direction = 'r';
+            else if (DO != '1' && DO != '5') direction = 'd';
+            else if (UP != '1' && UP != '5') direction = 'u';
+            else if (LE != '1' && LE != '5') direction = 'l';
+            break;
+        case 'l':
+            if (LE != '1' && LE != '5') direction = 'l';
+            else if (UP != '1' && UP != '5') direction = 'u';
+            else if (DO != '1' && DO != '5') direction = 'd';
+            else if (RI != '1' && RI != '5') direction = 'r';
+            break;
+        case 'd':
+            if (DO != '1' && DO != '5') direction = 'd';
+            else if (LE != '1' && LE != '5') direction = 'l';
+            else if (RI != '1' && RI != '5') direction = 'r';
+            else if (UP != '1' && UP != '5') direction = 'u';
+            break;
+        }
+        break;
+    }
+}
+void SnakeGame::updateItem() {
+    if (!(gateOpen) && (item_timer % 20) == 0) m.makeGates();
+
+
+    item_timer++;
+
 }

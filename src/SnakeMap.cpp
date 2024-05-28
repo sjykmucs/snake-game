@@ -3,6 +3,8 @@
 
 MapHandler::MapHandler() {
     map = {nullptr};
+    g1 = Gate();
+    g2 = Gate();
 }
 
 //map 디렉토리에서 해당하는 레벨의 파일을 가져온다.
@@ -30,6 +32,7 @@ void MapHandler::importLevel(int level) {
 void MapHandler::loadMap(std::ifstream &levelIn) {
     resetMap();
     levelIn >> maxHeight >> maxWidth;
+    
     map = new char *[maxHeight];
     for (int y{}; y < maxHeight; y++) 
         map[y] = new char [maxWidth];
@@ -69,13 +72,65 @@ void MapHandler::createMap() {
 }
 
 bool MapHandler::isWall(const int Y, const int X) const {
-    return (map[Y][X] == '1');
+    if (Y >= 0 && Y < maxHeight && X >= 0 && X < maxWidth) {
+        return map[Y][X] == '1';
+    } 
+    return true;
 }
 
 void MapHandler::putItem(const int Y, const int X,const char ITEM) {
-    if (Y > 0 && Y < maxHeight && X > 0 && X < maxWidth) {
+    if (Y >= 0 && Y < maxHeight && X >= 0 && X < maxWidth) {
         map[Y][X] = ITEM;
     }  
+}
+char MapHandler::getItem(const int Y, const int X) {
+    if (Y >= 0 && Y < maxHeight && X >= 0 && X < maxWidth) {
+        return map[Y][X];
+    }
+    else return '1'; //Invaild Position
+}
+
+//무작위 게이트 생성
+Gate MapHandler::getRandomGate() {
+    std::random_device rd;
+    std::mt19937 mt_gate(rd());
+
+    std::uniform_int_distribution<int> gateYDist(0, maxHeight - 1);
+    int y {gateYDist(mt_gate)};
+    int i {0};
+    for (int r{}; r < maxWidth; r++) {
+        if (map[y][r] == '1') i++;
+    }
+
+    std::uniform_int_distribution<int> gateXDist(0, i - 1);
+    int j {gateXDist(mt_gate)};
+    int x {};
+    while (j >= 0) {
+        if (map[y][x] == '1') j--;
+        x++;
+    }
+    x--;
+
+    Gate g{y, x, nullptr};
+    return g;
+}
+
+//
+void MapHandler::makeGates() {
+    if (g1.out != nullptr) {
+        putItem(g1.y, g1.x, '1');
+        putItem(g2.y, g2.x, '1');
+    }
+
+    g1 = getRandomGate();
+    g2 = getRandomGate();
+    while (g1.y == g2.y && g1.x == g2.x) g2 = getRandomGate();
+
+    g1.out = &g2;
+    g2.out = &g1;
+
+    putItem(g1.y, g1.x, '5');
+    putItem(g2.y, g2.x, '5');
 }
 
 //Getter Fn
@@ -87,6 +142,16 @@ int MapHandler::getMaxHeight() const {
 }
 int MapHandler::getMaxWidth() const {
     return maxWidth;
+}
+//특정 위치의 게이트 반환
+Gate MapHandler::getGate(const int Y, const int X) {
+    if (Y == g1.y && X == g1.x) return g1;
+    else if(Y == g2.y && X == g2.x) return g2;
+    return Gate{0,0,nullptr}; //No such gate
+}
+
+MapHandler::~MapHandler() {
+    resetMap();
 }
 
 

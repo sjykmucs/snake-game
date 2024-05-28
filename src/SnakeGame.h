@@ -14,15 +14,18 @@ struct Position
     Position(int row, int col);
 };
 
+
 class SnakeGame
 {
 private:
     int speed;
     int maxWidth, maxHeight;
+    int item_timer;
     char snakeChar;
     char direction; // direction of snake head
     std::vector<Position> snake;
 
+    bool gateOpen;
     MapHandler m;
 
 private:
@@ -31,6 +34,9 @@ private:
     void drawMap();
     void snakeMove();
     bool gameOver();
+
+    void checkItem();
+    void updateItem();
 public:
     SnakeGame(int level);   // constructor
     virtual ~SnakeGame();   // destructor
