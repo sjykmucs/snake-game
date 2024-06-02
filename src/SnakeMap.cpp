@@ -73,7 +73,7 @@ void MapHandler::createMap() {
 
 bool MapHandler::isWall(const int Y, const int X) const {
     if (Y >= 0 && Y < maxHeight && X >= 0 && X < maxWidth) {
-        return map[Y][X] == '1';
+        return map[Y][X] == '1'|| map[Y][X] == '2';
     } 
     return true;
 }

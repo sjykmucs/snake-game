@@ -119,7 +119,7 @@ bool SnakeGame::gameOver()
 
 SnakeGame::SnakeGame(int level)
 {
-    speed = 500000 / level; // level up -> speed up
+    speed = 200000 / level; // level up -> speed up //임시
     snakeChar = '#';
     direction = 'r'; // right
     item_timer = 0;
@@ -231,37 +231,37 @@ void SnakeGame::checkItem() {
         snake[0].x = in.out->x;
         gateOpen = true;
 
-        char UP = m.getItem(snake[0].y + 1, snake[0].x);
+        char UP = m.getItem(snake[0].y - 1, snake[0].x);
         char RI = m.getItem(snake[0].y, snake[0].x + 1);
-        char DO = m.getItem(snake[0].y - 1, snake[0].x);
+        char DO = m.getItem(snake[0].y + 1, snake[0].x);
         char LE = m.getItem(snake[0].y, snake[0].x - 1);
 
 
         switch (direction)
         {
         case 'u':
-            if (UP != '1' && UP != '5') direction = 'u';
-            else if (RI != '1' && RI != '5') direction = 'r';
-            else if (LE != '1' && LE != '5') direction = 'l';
-            else if (DO != '1' && DO != '5') direction = 'd';
+            if (UP != '1' && UP != '5' && UP != '2') direction = 'u';
+            else if (RI != '1' && RI != '5' && RI != '2') direction = 'r';
+            else if (LE != '1' && LE != '5' && LE != '2') direction = 'l';
+            else if (DO != '1' && DO != '5' && DO != '2') direction = 'd';
             break;
         case 'r':
-            if (RI != '1' && RI != '5') direction = 'r';
-            else if (DO != '1' && DO != '5') direction = 'd';
-            else if (UP != '1' && UP != '5') direction = 'u';
-            else if (LE != '1' && LE != '5') direction = 'l';
+            if (RI != '1' && RI != '5' && RI != '2') direction = 'r';
+            else if (DO != '1' && DO != '5' && DO != '2') direction = 'd';
+            else if (UP != '1' && UP != '5' && UP != '2') direction = 'u';
+            else if (LE != '1' && LE != '5' && LE != '2') direction = 'l';
             break;
         case 'l':
-            if (LE != '1' && LE != '5') direction = 'l';
-            else if (UP != '1' && UP != '5') direction = 'u';
-            else if (DO != '1' && DO != '5') direction = 'd';
-            else if (RI != '1' && RI != '5') direction = 'r';
+            if (LE != '1' && LE != '5' && LE != '2') direction = 'l';
+            else if (UP != '1' && UP != '5' && UP != '2') direction = 'u';
+            else if (DO != '1' && DO != '5' && DO != '2') direction = 'd';
+            else if (RI != '1' && RI != '5' && RI != '2') direction = 'r';
             break;
         case 'd':
-            if (DO != '1' && DO != '5') direction = 'd';
-            else if (LE != '1' && LE != '5') direction = 'l';
-            else if (RI != '1' && RI != '5') direction = 'r';
-            else if (UP != '1' && UP != '5') direction = 'u';
+            if (DO != '1' && DO != '5' && DO != '2') direction = 'd';
+            else if (LE != '1' && LE != '5' && LE != '2') direction = 'l';
+            else if (RI != '1' && RI != '5' && RI != '2') direction = 'r';
+            else if (UP != '1' && UP != '5' && UP != '2') direction = 'u';
             break;
         }
         break;
