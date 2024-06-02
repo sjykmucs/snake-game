@@ -119,7 +119,7 @@ bool SnakeGame::gameOver()
 
 SnakeGame::SnakeGame(int level)
 {
-    speed = 200000 / level; // level up -> speed up //임시
+    speed = 500000 / level; // level up -> speed up
     snakeChar = '#';
     direction = 'r'; // right
     item_timer = 0;
