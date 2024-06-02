@@ -119,16 +119,26 @@ bool SnakeGame::gameOver()
 
 SnakeGame::SnakeGame(int level)
 {
-    speed = 500000; // 0.5sec
+    speed = 500000 / level; // level up -> speed up
     snakeChar = '#';
     direction = 'r'; // right
     item_timer = 0;
     gateOpen = false;
 
+    max_len = 3;
+    miss_len = 3 + level * 2;
+    score_growth = 0;
+    miss_growth = level * 3;
+    score_poison = 0;
+    miss_poison = level;
+    score_gate = 0;
+    miss_gate = level * 2;
+
     m.importLevel(level);
     init();
     drawMap();
     drawSnake();
+    scoreBoard();
     refresh();
 }
 
@@ -154,6 +164,8 @@ void SnakeGame::startGame()
         checkItem();
         updateItem();
         drawMap();
+        scoreBoard();
+
         usleep(speed); // delay
     }
 }
@@ -212,6 +224,8 @@ void SnakeGame::checkItem() {
     case '4': //Poison
         break;
     case '5': //Gate
+        score_gate++;
+
         Gate in = m.getGate(snake[0].y, snake[0].x);
         snake[0].y = in.out->y;
         snake[0].x = in.out->x;
@@ -259,4 +273,54 @@ void SnakeGame::updateItem() {
 
     item_timer++;
 
+}
+
+void SnakeGame::scoreBoard()
+{   
+    move(1, maxWidth - 20);
+    printw("*------------------*");
+    move(3, maxWidth - 20);
+    printw(" Score Board");
+    move(5, maxWidth - 20);
+    printw(" B : %d / %d", snake.size(), max_len);
+    move(6, maxWidth - 20);
+    printw(" + : %d", score_growth);
+    move(7, maxWidth - 20);
+    printw(" - : %d", score_poison);
+    move(8, maxWidth - 20);
+    printw(" G : %d", score_gate);
+    move(10, maxWidth - 20);
+    printw("*------------------*");
+    
+    move(11, maxWidth - 20);
+    printw("*------------------*");
+    move(13, maxWidth - 20);
+    printw(" Mission");
+
+    move(15, maxWidth - 20);
+    if(max_len >= miss_len)
+        printw(" B : %d (v)", miss_len);
+    else
+        printw(" B : %d ( )", miss_len);
+    
+    move(16, maxWidth - 20);
+    if(score_growth >= miss_growth)
+        printw(" + : %d (v)", miss_growth);
+    else
+        printw(" + : %d ( )", miss_growth);
+
+    move(17, maxWidth - 20);
+    if(score_poison >= miss_poison)
+        printw(" - : %d (v)", miss_poison);
+    else
+        printw(" - : %d ( )", miss_poison);
+
+    move(18, maxWidth - 20);
+    if(score_gate >= miss_gate)
+        printw(" G : %d (v)", miss_gate);
+    else
+        printw(" G : %d ( )", miss_gate);
+
+    move(20, maxWidth - 20);
+    printw("*------------------*");
 }

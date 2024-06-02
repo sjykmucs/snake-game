@@ -28,6 +28,16 @@ private:
     bool gateOpen;
     MapHandler m;
 
+    /* for score board and mission */
+    int max_len;
+    int miss_len;
+    int score_growth;
+    int miss_growth;
+    int score_poison;
+    int miss_poison;
+    int score_gate;
+    int miss_gate;
+
 private:
     void init();
     void drawSnake();
@@ -37,6 +47,8 @@ private:
 
     void checkItem();
     void updateItem();
+
+    void scoreBoard();
 public:
     SnakeGame(int level);   // constructor
     virtual ~SnakeGame();   // destructor
