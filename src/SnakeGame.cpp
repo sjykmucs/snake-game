@@ -139,6 +139,8 @@ SnakeGame::SnakeGame(int level)
     score_gate = 0;
     miss_gate = level * 2;
 
+    isClear = false;
+
     m.importLevel(level);
     init();
     drawMap();
@@ -156,13 +158,15 @@ SnakeGame::~SnakeGame()
 
 void SnakeGame::startGame()
 {
-    while(true)
+    isClear = true;
+    while(!nextLevel())
     {
         if(gameOver())
         {
             move((maxHeight - 2) / 2, (maxWidth - 22) / 2);
             printw("GAME OVER");
             endwin();
+            isClear = false;
             break;
         }
         snakeMove();
@@ -173,6 +177,17 @@ void SnakeGame::startGame()
 
         usleep(speed); // delay
     }
+    if(isClear)
+    {
+        move((maxHeight - 2) / 2, (maxWidth - 34) / 2);
+        printw("Mission Complete!!!");
+        endwin();
+    }
+}
+
+bool SnakeGame::stageClear()
+{
+    return isClear;
 }
 
 //draw game map
@@ -360,4 +375,14 @@ void SnakeGame::scoreBoard()
 
     move(22, maxWidth - 20);
     printw("*------------------*");
+}
+
+bool SnakeGame::nextLevel()
+{
+    if(max_len >= miss_len && score_growth >= miss_growth && score_poison >= miss_poison
+        && score_speed >= miss_speed && score_gate >= miss_gate)
+    {
+        return true;
+    }
+    return false;
 }

@@ -40,6 +40,8 @@ private:
     int score_gate;
     int miss_gate;
 
+    bool isClear;
+
 private:
     void init();
     void drawSnake();
@@ -51,10 +53,13 @@ private:
     void updateItem();
 
     void scoreBoard();
+    bool nextLevel();
+
 public:
     SnakeGame(int level);   // constructor
     virtual ~SnakeGame();   // destructor
     void startGame();
+    bool stageClear();
 };
 
 #endif
