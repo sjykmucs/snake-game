@@ -134,6 +134,8 @@ SnakeGame::SnakeGame(int level)
     miss_growth = level * 3;
     score_poison = 0;
     miss_poison = level;
+    score_speed = 0;
+    miss_speed = level;
     score_gate = 0;
     miss_gate = level * 2;
 
@@ -229,12 +231,19 @@ void SnakeGame::checkItem() {
     {
     case '6':  // Speed Up item
     speed = 4*speed/5;
+    score_speed++;
         break;   
     case '3': //Growth
     snake.push_back(Position());
     score_growth++;
+    
+        if(snake.size() > max_len)
+            max_len++;
         break;
     case '4': //Poison
+        move(snake[snake.size() - 1].y, snake[snake.size() - 1].x);
+        printw(" ");
+        refresh();
     snake.pop_back();
     score_poison++;
         break;
@@ -308,39 +317,47 @@ void SnakeGame::scoreBoard()
     move(7, maxWidth - 20);
     printw(" - : %d", score_poison);
     move(8, maxWidth - 20);
+    printw(" S : %d", score_speed);
+    move(9, maxWidth - 20);
     printw(" G : %d", score_gate);
-    move(10, maxWidth - 20);
-    printw("*------------------*");
-    
     move(11, maxWidth - 20);
     printw("*------------------*");
+    
     move(13, maxWidth - 20);
+    printw("*------------------*");
+    move(15, maxWidth - 20);
     printw(" Mission");
 
-    move(15, maxWidth - 20);
+    move(16, maxWidth - 20);
     if(max_len >= miss_len)
         printw(" B : %d (v)", miss_len);
     else
         printw(" B : %d ( )", miss_len);
     
-    move(16, maxWidth - 20);
+    move(17, maxWidth - 20);
     if(score_growth >= miss_growth)
         printw(" + : %d (v)", miss_growth);
     else
         printw(" + : %d ( )", miss_growth);
 
-    move(17, maxWidth - 20);
+    move(18, maxWidth - 20);
     if(score_poison >= miss_poison)
         printw(" - : %d (v)", miss_poison);
     else
         printw(" - : %d ( )", miss_poison);
 
-    move(18, maxWidth - 20);
+    move(19, maxWidth - 20);
+    if(score_speed >= miss_speed)
+        printw(" S : %d (v)", miss_speed);
+    else
+        printw(" S : %d ( )", miss_speed);
+
+    move(20, maxWidth - 20);
     if(score_gate >= miss_gate)
         printw(" G : %d (v)", miss_gate);
     else
         printw(" G : %d ( )", miss_gate);
 
-    move(20, maxWidth - 20);
+    move(22, maxWidth - 20);
     printw("*------------------*");
 }

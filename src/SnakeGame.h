@@ -35,6 +35,8 @@ private:
     int miss_growth;
     int score_poison;
     int miss_poison;
+    int score_speed;
+    int miss_speed;
     int score_gate;
     int miss_gate;
 
