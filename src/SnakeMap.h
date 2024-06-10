@@ -10,6 +10,10 @@ struct Gate
     int y, x;
     Gate*out;
 };
+struct item
+{
+    int y,x;
+};
 
 class MapHandler 
 {
@@ -30,6 +34,7 @@ public:
     bool isWall(const int Y, const int X) const;
 
     void makeGates();
+    void makeitems(int a);
     Gate getGate(const int Y, const int X);
 
 private:
@@ -37,12 +42,15 @@ private:
     int maxHeight;
     int maxWidth;
     Gate g1, g2;
+    item Growth,Poison,Speed;
     
 private:
     void resetMap();
     void loadMap(std::ifstream &levelIn);
     void createMap();
     Gate getRandomGate();
+    item getRandomitems();
+    
 };
 
 #endif 

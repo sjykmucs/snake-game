@@ -32,6 +32,7 @@ void SnakeGame::init()
     init_pair(3, COLOR_GREEN, COLOR_GREEN); //Growth
     init_pair(4, COLOR_RED, COLOR_RED); //Poison
     init_pair(5, COLOR_BLUE, COLOR_MAGENTA); //Gate
+    init_pair(6, COLOR_YELLOW, COLOR_YELLOW); //Speed
 }
 
 /* draw a snake on the map */
@@ -113,7 +114,9 @@ bool SnakeGame::gameOver()
 
     // snake head meets Wall
     if (m.isWall(snake[0].y, snake[0].x))               { return true; }
-
+    
+    // size 2 with Poison
+    if (snake.size()==2){return true; }
     return false;
 }
 
@@ -206,6 +209,11 @@ void SnakeGame::drawMap() {
                 addch('0');
                 attroff(COLOR_PAIR(5));
                 break;
+            case '6': //Speed up
+                attron(COLOR_PAIR(6)); 
+                addch('_');
+                attroff(COLOR_PAIR(6));
+                break;
             }
         }
     }
@@ -219,9 +227,16 @@ void SnakeGame::checkItem() {
     item = m.getItem(snake[0].y, snake[0].x);
     switch (item)
     {
+    case '6':  // Speed Up item
+    speed = 4*speed/5;
+        break;   
     case '3': //Growth
+    snake.push_back(Position());
+    score_growth++;
         break;
     case '4': //Poison
+    snake.pop_back();
+    score_poison++;
         break;
     case '5': //Gate
         score_gate++;
@@ -270,7 +285,12 @@ void SnakeGame::checkItem() {
 void SnakeGame::updateItem() {
     if (!(gateOpen) && (item_timer % 20) == 0) m.makeGates();
 
-
+    if ((item_timer % 20) == 0) 
+    {
+    m.makeitems(1);   // Growth
+    m.makeitems(2);   //Poison
+    m.makeitems(3);   //Speed
+    }
     item_timer++;
 
 }
