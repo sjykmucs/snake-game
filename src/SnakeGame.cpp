@@ -263,10 +263,12 @@ void SnakeGame::checkItem() {
     switch (item)
     {
     case '6':  // Speed Up item
+        m.putItem(snake[0].y,snake[0].x,'0');
         speed = 4*speed/5;
         score_speed++;
         break;   
     case '3': //Growth
+        m.putItem(snake[0].y,snake[0].x,'0');
         snake_size++;
         score_growth++;
     
@@ -274,6 +276,7 @@ void SnakeGame::checkItem() {
             max_len++;
         break;
     case '4': //Poison
+        m.putItem(snake[0].y,snake[0].x,'0');
         snake_size--;
         score_poison++;
         break;
