@@ -24,6 +24,7 @@ private:
     char snakeChar;
     char direction; // direction of snake head
     std::vector<Position> snake;
+    int snake_size;
 
     bool gateOpen;
     MapHandler m;
@@ -61,5 +62,6 @@ public:
     void startGame();
     bool stageClear();
 };
+
 
 #endif

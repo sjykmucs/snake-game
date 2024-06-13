@@ -27,6 +27,7 @@ void SnakeGame::init()
 
     //Set colors
     start_color();
+    init_pair(0, COLOR_BLACK, COLOR_BLACK);
     init_pair(1, COLOR_WHITE, COLOR_WHITE); //Wall, Immune Wall
     init_pair(2, COLOR_CYAN, COLOR_CYAN); //Snake Head, Body
     init_pair(3, COLOR_GREEN, COLOR_GREEN); //Growth
@@ -82,12 +83,10 @@ void SnakeGame::snakeMove()
             gameOver();
         break;
     }
-    
-    //remove tail
-    move(snake[snake.size() - 1].y, snake[snake.size() - 1].x);
-    printw(" ");
-    refresh();
-    snake.pop_back();
+
+    while (snake.size() > snake_size) {
+        snake.pop_back();
+    }
     
     // add to head
     if (direction == 'l')
@@ -98,9 +97,6 @@ void SnakeGame::snakeMove()
         snake.insert(snake.begin(), Position(snake[0].x, snake[0].y - 1));
     else if (direction == 'd')
         snake.insert(snake.begin(), Position(snake[0].x, snake[0].y + 1));
-    move(snake[0].y, snake[0].x);
-    addch(snakeChar);
-    refresh();
 }
 
 /* cases to fail the game */
@@ -127,6 +123,8 @@ SnakeGame::SnakeGame(int level)
     direction = 'r'; // right
     item_timer = 0;
     gateOpen = false;
+    snake_size = 2;
+
 
     max_len = 3;
     miss_len = 3 + level * 2;
@@ -140,6 +138,7 @@ SnakeGame::SnakeGame(int level)
     miss_gate = level * 2;
 
     isClear = false;
+
 
     m.importLevel(level);
     init();
@@ -170,9 +169,9 @@ void SnakeGame::startGame()
             break;
         }
         snakeMove();
+        drawMap();
         checkItem();
         updateItem();
-        drawMap();
         scoreBoard();
 
         usleep(speed); // delay
@@ -200,6 +199,9 @@ void SnakeGame::drawMap() {
             switch (map[y][x])
             {
             case '0':
+                attron(COLOR_PAIR(0)); attron(A_INVIS);
+                addch('_');
+                attroff(COLOR_PAIR(0)); attroff(A_INVIS);
                 break;
             case '1': //Wall
                 attron(COLOR_PAIR(1)); attron(A_INVIS);
@@ -234,6 +236,15 @@ void SnakeGame::drawMap() {
             }
         }
     }
+    for (const Position& pos : snake) 
+    {
+        move(pos.y, pos.x);
+        attron(COLOR_PAIR(2)); attron(A_INVIS);
+        addch('_');
+        attroff(COLOR_PAIR(2)); attroff(A_INVIS);
+    }
+    refresh();
+
 }
 void SnakeGame::checkItem() {
     // check snake tail
@@ -245,22 +256,19 @@ void SnakeGame::checkItem() {
     switch (item)
     {
     case '6':  // Speed Up item
-    speed = 4*speed/5;
-    score_speed++;
+        speed = 4*speed/5;
+        score_speed++;
         break;   
     case '3': //Growth
-    snake.push_back(Position());
-    score_growth++;
+        snake_size++;
+        score_growth++;
     
         if(snake.size() > max_len)
             max_len++;
         break;
     case '4': //Poison
-        move(snake[snake.size() - 1].y, snake[snake.size() - 1].x);
-        printw(" ");
-        refresh();
-    snake.pop_back();
-    score_poison++;
+        snake_size--;
+        score_poison++;
         break;
     case '5': //Gate
         score_gate++;
