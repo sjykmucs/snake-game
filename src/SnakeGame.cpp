@@ -110,6 +110,11 @@ bool SnakeGame::gameOver()
 
     // snake head meets Wall
     if (m.isWall(snake[0].y, snake[0].x))               { return true; }
+
+    for(auto elem{snake.begin() + 1}; elem != snake.end(); elem++) 
+    {
+        if (snake[0].y == (*elem).y && snake[0].x == (*elem).x) return true;
+    } 
     
     // size 2 with Poison
     if (snake.size()==2){return true; }
@@ -253,6 +258,8 @@ void SnakeGame::checkItem() {
 
     // check snake head
     item = m.getItem(snake[0].y, snake[0].x);
+    
+
     switch (item)
     {
     case '6':  // Speed Up item
