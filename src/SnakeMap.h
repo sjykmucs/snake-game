@@ -36,6 +36,7 @@ public:
     void makeGates();
     void makeitems(int a);
     Gate getGate(const int Y, const int X);
+    item* getStart();
 
 private:
     char **map;
@@ -43,6 +44,7 @@ private:
     int maxWidth;
     Gate g1, g2;
     item Growth,Poison,Speed;
+    item Start;
     
 private:
     void resetMap();
@@ -50,6 +52,7 @@ private:
     void createMap();
     Gate getRandomGate();
     item getRandomitems();
+
     
 };
 

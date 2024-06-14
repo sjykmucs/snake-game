@@ -8,6 +8,7 @@ MapHandler::MapHandler() {
     Growth = item();
     Poison = item();
     Speed = item();
+    Start = item();
 }
 
 //map 디렉토리에서 해당하는 레벨의 파일을 가져온다.
@@ -23,6 +24,12 @@ void MapHandler::importLevel(int level) {
         break;
     case 3:
         levelIn.open("./map/level_3.txt");
+        break;
+    case 4:
+        levelIn.open("./map/level_4.txt");
+        break;
+    case 5:
+        levelIn.open("./map/level_5.txt");
         break;
     }
     if (levelIn.fail()) return createMap();
@@ -46,7 +53,15 @@ void MapHandler::loadMap(std::ifstream &levelIn) {
         data = levelIn.get();
 
         if (data == '\n') x--;
-        else map[y][x] = data;
+        else {
+            map[y][x] = data;
+            if (data == 's') 
+            {
+            Start.y = y;
+            Start.x = x;
+            map[y][x] = '0';
+            }
+        }
         }
     }
 }
@@ -72,6 +87,9 @@ void MapHandler::createMap() {
     map[20] = new char[maxWidth]{'2','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','2'};
     for (int y{1}; y < 20; y++)
         map[y] = new char[maxWidth]{'1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1'};
+
+    Start.y = 5;
+    Start.x = 5;
 }
 
 bool MapHandler::isWall(const int Y, const int X) const {
@@ -91,6 +109,10 @@ char MapHandler::getItem(const int Y, const int X) {
         return map[Y][X];
     }
     else return '1'; //Invaild Position
+}
+
+item* MapHandler::getStart() {
+    return &Start;
 }
 
 //무작위 게이트 생성

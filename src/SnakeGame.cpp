@@ -39,16 +39,9 @@ void SnakeGame::init()
 /* draw a snake on the map */
 void SnakeGame::drawSnake()
 {
-    for (int i = 0; i < 3; i++)
-    {
-        snake.push_back(Position(8 - i, 1));
-    }
-
-    for (int i = 0; i < snake.size(); i++)
-    {
-        move(snake[i].y, snake[i].x);
-        addch(snakeChar);
-    }
+    snake.push_back(Position(m.getStart()->x, m.getStart()->y));
+    snake.push_back(Position(m.getStart()->x - 1, m.getStart()->y));
+    snake.push_back(Position(m.getStart()->x - 2, m.getStart()->y));
     return;
 }
 
