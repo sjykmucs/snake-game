@@ -272,7 +272,7 @@ void SnakeGame::checkItem() {
         snake_size++;
         score_growth++;
     
-        if(snake.size() > max_len)
+        if(snake_size == max_len)
             max_len++;
         break;
     case '4': //Poison
@@ -344,7 +344,7 @@ void SnakeGame::scoreBoard()
     move(3, maxWidth - 20);
     printw(" Score Board");
     move(5, maxWidth - 20);
-    printw(" B : %d / %d", snake.size(), max_len);
+    printw(" B : %d / %d", snake_size + 1, max_len);
     move(6, maxWidth - 20);
     printw(" + : %d", score_growth);
     move(7, maxWidth - 20);
